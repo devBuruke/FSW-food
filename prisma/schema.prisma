@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// O prisma é uma ORM, que é um facilitador de banco de dados para 
+// todos os processos de ações do banco
+
+// aqui abaixo sendo criado as entidades e relações
+model Restaurant {
+  id                  String     @id @default(uuid())
+  name                String
+  imageURL            String
+  deliveryfee         Decimal    @db.Decimal(10, 2)
+  deliveryTimeMinutes Int
+  // resumindo seria uma outra entidade para fazer a relação de 
+  // muitas para muitas, sendo simplificado somente para esta forma
+  categories          Category[]
+  products            Product[]
+}
+
+model Category {
+  id         String       @id @default(uuid())
+  name       String
+  imageURL   String
+  // ele usa essa referencia para o prisma 
+  categories Restaurant[]
+  products   Product[]
+}
+
+model Product {
+  id                 String     @id @default(uuid())
+  name               String
+  description        String
+  imageURL           String
+  price              Decimal    @db.Decimal(10, 2)
+  discountPercentage int        @default(0)
+  restaurantID       String
+  // forenKEY
+  restaurant         Restaurant @relation(fields: [restaurantID], references: [id])
+  categoryID         String
+  category           Category   @relation(fields: [categoryID], references: [id])
+}
