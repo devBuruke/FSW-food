@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,19 +17,16 @@ model Restaurant {
   imageURL            String
   deliveryfee         Decimal    @db.Decimal(10, 2)
   deliveryTimeMinutes Int
-  // resumindo seria uma outra entidade para fazer a relação de 
-  // muitas para muitas, sendo simplificado somente para esta forma
-  categories          Category[]
   products            Product[]
+  categories          Category[] @relation("CategoryToRestaurant")
 }
 
 model Category {
   id         String       @id @default(uuid())
   name       String
   imageURL   String
-  // ele usa essa referencia para o prisma 
-  categories Restaurant[]
   products   Product[]
+  categories Restaurant[] @relation("CategoryToRestaurant")
 }
 
 model Product {
@@ -46,8 +37,7 @@ model Product {
   price              Decimal    @db.Decimal(10, 2)
   discountPercentage Int        @default(0)
   restaurantID       String
-  // forenKEY
-  restaurant         Restaurant @relation(fields: [restaurantID], references: [id])
   categoryID         String
   category           Category   @relation(fields: [categoryID], references: [id])
+  restaurant         Restaurant @relation(fields: [restaurantID], references: [id])
 }
