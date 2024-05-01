@@ -40,7 +40,9 @@ const Home = () => {
             <ChevronRightIcon size={16} />
           </Button>
         </div>
-        <ProductList />
+        <div className="px-5">
+          <ProductList />
+        </div>
       </div>
     </>
   );
