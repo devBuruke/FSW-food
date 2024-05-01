@@ -5,8 +5,24 @@ import Search from "./_components/search";
 import Image from "next/image";
 import { Button } from "./_components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
+import { db } from "./_lib/prisma";
 
-const Home = () => {
+const Home = async () => {
+  const Products = await db.product.findMany({
+    where: {
+      discountPercentage: {
+        gt: 0,
+      },
+    },
+    take: 10,
+    include: {
+      restaurant: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
   return (
     // lembrar de quando chamar um elemento fazer </>
     <>
@@ -41,7 +57,7 @@ const Home = () => {
           </Button>
         </div>
         <div className="px-5">
-          <ProductList />
+          <ProductList products={Products} />
         </div>
       </div>
     </>
